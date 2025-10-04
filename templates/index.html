@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dxep Chatbot</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: url('/static/futuristic-robot-illustration_23-2150979001.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        #chatbox {
+            width: 420px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px #b0c4de;
+            padding: 24px 24px 16px 24px;
+        }
+
+        #messages {
+            height: 340px;
+            overflow-y: auto;
+            border: none;
+            padding: 0;
+            margin-bottom: 16px;
+            background: transparent;
+        }
+
+        .user,
+        .Dxep {
+            display: block;
+            max-width: 80%;
+            margin: 12px 0;
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 1rem;
+            word-break: break-word;
+            box-shadow: 0 2px 8px #e0eafc;
+        }
+
+        .user {
+            background: #007bff;
+            color: #fff;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .Dxep {
+            background: #f1f1f1;
+            color: #333;
+            margin-right: auto;
+            text-align: left;
+        }
+
+        #input {
+            width: 70%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #b0c4de;
+            font-size: 1rem;
+            margin-right: 8px;
+        }
+
+        #send {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            background: #007bff;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #send:hover {
+            background: #0056b3;
+        }
+
+        #feedback {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        #feedback button {
+            padding: 6px 16px;
+            margin: 0 8px;
+            border-radius: 6px;
+            border: none;
+            background: #e0eafc;
+            color: #333;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #feedback button:hover {
+            background: #b0c4de;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="chatbox">
+        <h2>Dxep Chatbot</h2>
+        <div id="messages"></div>
+        <input type="text" id="input" placeholder="Type your message..." autofocus>
+        <button id="send">Send</button>
+        <div id="feedback" style="margin-top:10px; display:none;">
+            <span>Was the answer correct?</span>
+            <button id="correct">Yes</button>
+            <button id="incorrect">No</button>
+        </div>
+    </div>
+    <script>
+        const input = document.getElementById('input');
+        const send = document.getElementById('send');
+        const messages = document.getElementById('messages');
+
+        let lastUserMessage = '';
+        function appendMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = sender;
+            if (sender === 'Dxep') {
+                div.innerHTML = text;
+                document.getElementById('feedback').style.display = 'block';
+            } else {
+                div.textContent = text;
+                lastUserMessage = text.replace('You: ', '');
+            }
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        send.onclick = function () {
+            const msg = input.value.trim();
+            if (!msg) return;
+            appendMessage('You: ' + msg, 'user');
+            input.value = '';
+            fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'message=' + encodeURIComponent(msg)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    appendMessage('Dxep: ' + data.response, 'Dxep');
+                });
+        };
+
+        document.getElementById('correct').onclick = function () {
+            document.getElementById('feedback').style.display = 'none';
+        };
+        document.getElementById('incorrect').onclick = function () {
+            fetch('/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question: lastUserMessage })
+            });
+            document.getElementById('feedback').style.display = 'none';
+        };
+
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') send.click();
+        });
+    </script>
+</body>
+
+</html>
