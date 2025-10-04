@@ -1,0 +1,7 @@
+flask
+torch
+numpy
+requests
+nltk
+markupsafe
+gunicorn
