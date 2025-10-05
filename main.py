@@ -1,3 +1,12 @@
+import nltk
+try:
+    nltk.data.find('tokenizers/punkt_tab')
+except LookupError:
+    nltk.download('punkt_tab')
+try:
+    nltk.data.find('corpora/wordnet')
+except LookupError:
+    nltk.download('wordnet')
 import datetime
 import requests
 from urllib import request
@@ -14,8 +23,8 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 
-nltk.download('punkt_tab')
-nltk.download('wordnet')
+# nltk.download('punkt_tab')
+# nltk.download('wordnet')
 
 
 class ChatbotModel(nn.Module):
@@ -274,4 +283,5 @@ if __name__ == '__main__':
 
 # chatbot = ChatbotAssistant('intents.json')
 # print(chatbot.tokenize_and_lemmatize("Hello, how are you?"))
+
 
