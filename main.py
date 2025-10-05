@@ -13,8 +13,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
-# nltk.download('punkt')
-# nltk.download('wordnet')
+
+nltk.download('punkt')
+nltk.download('wordnet')
 
 
 class ChatbotModel(nn.Module):
