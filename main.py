@@ -14,7 +14,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 
-nltk.download('punkt')
+nltk.download('punkt_tab')
 nltk.download('wordnet')
 
 
@@ -274,3 +274,4 @@ if __name__ == '__main__':
 
 # chatbot = ChatbotAssistant('intents.json')
 # print(chatbot.tokenize_and_lemmatize("Hello, how are you?"))
+
